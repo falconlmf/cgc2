@@ -15,7 +15,7 @@ def monitor():
     top = topright[0][1]
     width = topright[0][0]-bottomleft[0][0]
     height = bottomleft[0][1]-topright[0][1]
-    # return left, top, width, height
+    # return [left, top, width, height]
     return {'top':top, 'left':left, 'width':width, 'height':height}
 
 def find(cls, itm, corner='center', save=0, duration=0):

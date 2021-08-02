@@ -1,10 +1,38 @@
+def keys_exists(element, *keys):
+    '''
+    Check if *keys (nested) exists in `element` (dict).
+    '''
+    if not isinstance(element, dict):
+        raise AttributeError('keys_exists() expects dict as first argument.')
+    if len(keys) == 0:
+        raise AttributeError('keys_exists() expects at least two arguments, one given.')
+
+    _element = element
+    for key in keys:
+        try:
+            _element = _element[key]
+        except KeyError:
+            return False
+    return True
+
 class position():
     dic = dict()
-    def set(self, key1, key2, val):
-        if key1 not in self.dic:
-            self.dic[key1] = {key2: val}
+    def set(self, val, *key):
+        _len = len(key)
+        if not _len:
+            print ('[dictionary] region set ERROR')
+            return
+        _dic = {key[-1]: val}
+        if _len == 1:
+            self.dic = _dic
+            return
+        if _len > 2:
+            for i in reversed(range(1, _len-1)):
+                _dic = {key[i]: _dic}
+        if key[0] in self.dic:
+            self.dic[key[0]].update(_dic)
         else:
-            self.dic[key1][key2] = val
+            self.dic[key[0]] = _dic
     def get(self, key1, key2):
         if key1 not in self.dic:
             return None
@@ -39,8 +67,7 @@ class region():
             for i in reversed(range(1, _len-1)):
                 _dic = {key[i]: _dic}
         if key[0] in self.dic:
-            print('exist', self.dic[key[0]])
-            self.dic[key[0]] = [self.dic[key[0]], _dic]
+            self.dic[key[0]].update(_dic)
         else:
             self.dic[key[0]] = _dic
 

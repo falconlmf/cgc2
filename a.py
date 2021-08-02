@@ -15,8 +15,7 @@ regDict = dictionary.region()
 def clickAll(cls, itm, **kwargs):
     print ('[click]', cls, itm, '**', kwargs)
     if not posDict.get(cls, itm):
-        print ('[click] new key')
-        posDict.set(cls, itm, find.find(cls, itm))
+        posDict.set(find.find(cls, itm), cls, itm)
     for pt in posDict.get(cls, itm):
         pag.moveTo(pt)
         print (pt)
@@ -24,8 +23,7 @@ def clickAll(cls, itm, **kwargs):
 def click(cls, itm, **kwargs):
     print ('[click]', cls, itm, '**', kwargs)
     if not posDict.get(cls, itm):
-        print ('[click] new key')
-        posDict.set(cls, itm, find.find(cls, itm))
+        posDict.set(find.find(cls, itm), cls, itm)
     pt = posDict.get(cls, itm)[0]
     if pt:
         pag.click(pt)
@@ -43,8 +41,8 @@ def init():
 def main():
     print ('[start]')
     init()
-    # clickAll('monster', '花妖')
-    # posDict.print('monster')
+    clickAll('monster', '花妖')
+    posDict.print()
 
 if __name__ == "__main__":
     try:

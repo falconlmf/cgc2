@@ -38,11 +38,13 @@ def findAll(*keys):
     return fd.find(keys, monitor=getMonitor())
 
 def getMonitor():
-    print (regDict.get('canvas','monitor'))
-
+    monitor = regDict.get('canvas','monitor')
+    if monitor:
+        return monitor
     monitor = fd.monitor()
     regDict.set(monitor, 'canvas', 'monitor')
     regDict.set([monitor['left']+monitor['width']/2, monitor['top']+monitor['height']/2], 'canvas', 'center')
+    return monitor
 
 def init():
     print ('[init] start')

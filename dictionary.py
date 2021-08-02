@@ -73,7 +73,10 @@ class region():
     def get(self, *key):
         _dic = self.dic
         for _key in key:
-            _dic = _dic[_key]
+            try:
+                _dic = _dic[_key]
+            except KeyError:
+                return None
         return _dic
     def print(self, *key):
         print (f'[dictionary] region:')

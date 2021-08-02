@@ -30,9 +30,7 @@ def click(*keys, **kwargs):
 
 def find(*keys):
     pt = fd.find(*keys, monitor=getMonitor())
-    if pt:
-        return pt[0]
-    return None
+    return pt or None
 
 def findAll(*keys):
     return fd.find(keys, monitor=getMonitor())

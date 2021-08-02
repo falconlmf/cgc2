@@ -29,24 +29,23 @@ def click(*keys, **kwargs):
         pag.click(pt)
 
 def find(*keys):
-    monitor = regDict.get('canvas','monitor')
-    pt = fd.find(*keys, monitor=monitor)
+    pt = fd.find(*keys, monitor=getMonitor())
     if pt:
         return pt[0]
     return None
 
 def findAll(*keys):
-    monitor = regDict.get('canvas','monitor')
-    return fd.find(keys, monitor=monitor)
+    return fd.find(keys, monitor=getMonitor())
 
-def findMonitor():
-    return fd.monitor()
+def getMonitor():
+    print (regDict.get('canvas','monitor'))
+
+    monitor = fd.monitor()
+    regDict.set(monitor, 'canvas', 'monitor')
+    regDict.set([monitor['left']+monitor['width']/2, monitor['top']+monitor['height']/2], 'canvas', 'center')
 
 def init():
     print ('[init] start')
-    monitor = findMonitor()
-    regDict.set(monitor, 'canvas', 'monitor')
-    regDict.set([monitor['left']+monitor['width']/2, monitor['top']+monitor['height']/2], 'canvas', 'center')
     pag.click(find('ui_bar', 'status_off'))
     while 1:
         print(find('ui_bar', 'status_off'))

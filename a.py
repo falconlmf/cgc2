@@ -41,8 +41,8 @@ def init():
 def main():
     print ('[start]')
     init()
-    clickAll('monster', '花妖')
-    posDict.print()
+    # clickAll('monster', '花妖')
+    # posDict.print()
 
 if __name__ == "__main__":
     try:

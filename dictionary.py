@@ -70,7 +70,11 @@ class region():
             self.dic[key[0]].update(_dic)
         else:
             self.dic[key[0]] = _dic
-
+    def get(self, *key):
+        _dic = self.dic
+        for _key in key:
+            _dic = _dic[_key]
+        return _dic
     def print(self, *key):
         print (f'[dictionary] region:')
         _len = len(key)

@@ -14,7 +14,7 @@ def monitor():
     # return [left, top, width, height]
     return {'top':top, 'left':left, 'width':width, 'height':height}
 
-def find(cls, itm, corner='center', monitor=None, save=0, duration=0):
+def find(cls, itm, corner='center', monitor=None, save=0, duration=0, log=0):
     print (f'[find]: {cls}/{itm} at monitor({monitor})')
     time_end = 0
     findings = []
@@ -27,14 +27,25 @@ def find(cls, itm, corner='center', monitor=None, save=0, duration=0):
     template = cv2.imread(f'{cls}/{itm}.png',cv2.IMREAD_UNCHANGED)
     h, w = template.shape[:-1]
     with mss.mss() as sct:
-        _monitor = monitor or sct.monitors[0]
+        if monitor:
+            _x = monitor['left']
+            _y = monitor['top']
+            _monitor = monitor
+        else:
+            _x = 0
+            _y = 0
+            _monitor = sct.monitors[0]
         while 1:
             mask = template.copy()
             img = np.array(sct.grab(_monitor))
             res = cv2.matchTemplate(img, template, cv2.TM_CCORR_NORMED, None, mask=mask)
             match_locations = np.where(res>=0.99999)
+            if log:
+                print('match_locations: ', match_locations)
             # draw template match boxes, scan from top left
             for (x, y) in zip(match_locations[1], match_locations[0]):
+                x += _x
+                y += _y
                 if corner == 'center':
                     findings.append([int(x+w/2),int(y+h/2)])
                 elif corner == 'topleft':

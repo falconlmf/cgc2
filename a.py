@@ -34,7 +34,9 @@ def init():
     monitor = find.monitor()
     regDict.set(monitor, 'canvas', 'monitor')
     regDict.set([monitor['left']+monitor['width']/2, monitor['top']+monitor['height']/2], 'canvas', 'center')
-    regDict.print()
+    pag.click(find.find('ui_bar', 'status_off', monitor=regDict.get('canvas','monitor'))[0])
+    while 1:
+        print(find.find('ui_bar', 'status_off', monitor=regDict.get('canvas','monitor')))
     print ('[init] done')
 
 

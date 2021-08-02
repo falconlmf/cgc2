@@ -5,16 +5,28 @@ import mss
 import numpy as np
 
 def monitor():
-    bottomleft = find('ui_bar', 'status_off', corner='bottomleft',duration=-1)
-    topright = find('ui_action', 'kick', corner='topright',duration=-1)
-    left = bottomleft[0][0]
-    top = topright[0][1]
-    width = topright[0][0]-bottomleft[0][0]
-    height = bottomleft[0][1]-topright[0][1]
-    # return [left, top, width, height]
+    bottomleft = find('ui_bar', 'status_off', corner='bottomleft',thres=0.975,duration=-1,save=1)
+    topright = find('ui_action', 'kick', corner='topright',thres=0.99,duration=0.5)
+    if bottomleft and topright:
+        left = bottomleft[0][0]
+        top = topright[0][1]
+        width = topright[0][0]-bottomleft[0][0]
+        height = bottomleft[0][1]-topright[0][1]
+    else:
+        print ('[monitor] in battle')
+        topleft = find('ui_battle', 'hpmp', corner='topleft',thres=0.975,duration=-1)
+        print (topleft)
+        left = topleft[0][0]
+        top = topleft[0][1]
+        height = bottomleft[0][1]-topleft[0][1]
+        width = int(height*1.3333)
+        print (height, width)
     return {'top':top, 'left':left, 'width':width, 'height':height}
 
-def find(cls, itm, corner='center', monitor=None, save=0, duration=0, log=0):
+def find(*keys, corner='center', monitor=None, thres=0.99999, save=0, duration=0, log=0):
+    print (keys[0], keys[1])
+    cls = keys[0]
+    itm = keys[1]
     print (f'[find]: {cls}/{itm} at monitor({monitor})')
     time_end = 0
     findings = []
@@ -39,7 +51,7 @@ def find(cls, itm, corner='center', monitor=None, save=0, duration=0, log=0):
             mask = template.copy()
             img = np.array(sct.grab(_monitor))
             res = cv2.matchTemplate(img, template, cv2.TM_CCORR_NORMED, None, mask=mask)
-            match_locations = np.where(res>=0.99999)
+            match_locations = np.where(res>=thres)
             if log:
                 print('match_locations: ', match_locations)
             # draw template match boxes, scan from top left

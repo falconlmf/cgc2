@@ -1,7 +1,7 @@
 import sys
 import os
 import time
-import find
+import find as fd
 import dictionary
 import pyautogui as pag
 
@@ -12,33 +12,45 @@ regDict = dictionary.region()
 
 
 
-def clickAll(cls, itm, **kwargs):
-    print ('[click]', cls, itm, '**', kwargs)
-    if not posDict.get(cls, itm):
-        posDict.set(find.find(cls, itm), cls, itm)
-    for pt in posDict.get(cls, itm):
+def clickAll(*keys, **kwargs):
+    print ('[click]', *keys, '**', kwargs)
+    if not posDict.get(*keys):
+        posDict.set(fd.find(*keys), *keys)
+    for pt in posDict.get(*keys):
         pag.moveTo(pt)
         print (pt)
 
-def click(cls, itm, **kwargs):
-    print ('[click]', cls, itm, '**', kwargs)
-    if not posDict.get(cls, itm):
-        posDict.set(find.find(cls, itm), cls, itm)
-    pt = posDict.get(cls, itm)[0]
+def click(*keys, **kwargs):
+    print ('[click]', *keys, '**', kwargs)
+    if not posDict.get(*keys):
+        posDict.set(fd.find(*keys), *keys)
+    pt = posDict.get(*keys)[0]
     if pt:
         pag.click(pt)
 
+def find(*keys):
+    monitor = regDict.get('canvas','monitor')
+    pt = fd.find(*keys, monitor=monitor)
+    if pt:
+        return pt[0]
+    return None
+
+def findAll(*keys):
+    monitor = regDict.get('canvas','monitor')
+    return fd.find(keys, monitor=monitor)
+
+def findMonitor():
+    return fd.monitor()
 
 def init():
     print ('[init] start')
-    monitor = find.monitor()
+    monitor = findMonitor()
     regDict.set(monitor, 'canvas', 'monitor')
     regDict.set([monitor['left']+monitor['width']/2, monitor['top']+monitor['height']/2], 'canvas', 'center')
-    pag.click(find.find('ui_bar', 'status_off', monitor=regDict.get('canvas','monitor'))[0])
+    pag.click(find('ui_bar', 'status_off'))
     while 1:
-        print(find.find('ui_bar', 'status_off', monitor=regDict.get('canvas','monitor')))
+        print(find('ui_bar', 'status_off'))
     print ('[init] done')
-
 
 def main():
     print ('[start]')

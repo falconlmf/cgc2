@@ -5,26 +5,30 @@ import mss
 import numpy as np
 
 def monitor():
-    bottomleft = find('ui_bar', 'status_off', corner='bottomleft',thres=0.975,duration=-1,save=1)
+    bottomleft = find('ui_bar', 'status_off', corner='bottomleft',thres=0.975,duration=-1)
     topright = find('ui_action', 'kick', corner='topright',thres=0.99,duration=0.5)
+    ret = []
     if bottomleft and topright:
-        left = bottomleft[0][0]
-        top = topright[0][1]
-        width = topright[0][0]-bottomleft[0][0]
-        height = bottomleft[0][1]-topright[0][1]
+        for i in range(len(bottomleft)):
+            left = bottomleft[i][0]
+            top = topright[i][1]
+            width = topright[i][0]-bottomleft[i][0]
+            height = bottomleft[i][1]-topright[i][1]
+            center = [left+int(width/2), top+int(height/2)]
+            ret.append({'top':top, 'left':left, 'width':width, 'height':height, 'center':center})
     else:
-        print ('[monitor] in battle')
         topleft = find('ui_battle', 'hpmp', corner='topleft',thres=0.975,duration=-1)
-        print (topleft)
-        left = topleft[0][0]
-        top = topleft[0][1]
-        height = bottomleft[0][1]-topleft[0][1]
-        width = int(height*1.3333)
-        print (height, width)
-    return {'top':top, 'left':left, 'width':width, 'height':height}
+        print ('[monitor] in battle')
+        for i in range(len(bottomleft)):
+            left = topleft[i][0]
+            top = topleft[i][1]
+            height = bottomleft[i][1]-topleft[i][1]
+            width = int(height*1.3333)
+            center = [left+int(width/2), top+int(height/2)]
+            ret.append({'top':top, 'left':left, 'width':width, 'height':height, 'center':center})
+    return ret
 
-def find(*keys, corner='center', monitor=None, thres=0.99999, save=0, duration=0, log=0):
-    print (keys[0], keys[1])
+def find(*keys, corner='center', monitor=None, thres=0.99, save=0, duration=0, log=0, **kwargs):
     cls = keys[0]
     itm = keys[1]
     print (f'[find]: {cls}/{itm} at monitor({monitor})')
@@ -48,6 +52,7 @@ def find(*keys, corner='center', monitor=None, thres=0.99999, save=0, duration=0
             _y = 0
             _monitor = sct.monitors[0]
         while 1:
+            # mask will be modified after matching
             mask = template.copy()
             img = np.array(sct.grab(_monitor))
             res = cv2.matchTemplate(img, template, cv2.TM_CCORR_NORMED, None, mask=mask)
